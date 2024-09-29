@@ -56,15 +56,6 @@ const LoginForm = () => {
     });
   };
 
-  const loginToaster = () => {
-    if (error) {
-      toast({
-        variant: "destructive",
-        title: error,
-      });
-    }
-  };
-
   return (
     <CardWrapper titleLabel="Login Page">
       <Form {...form}>
@@ -77,7 +68,11 @@ const LoginForm = () => {
                 <FormItem>
                   <FormLabel>Email address</FormLabel>
                   <FormControl>
-                    <Input placeholder="jhon.deo@example.com" {...field} />
+                    <Input
+                      placeholder="jhon.deo@example.com"
+                      type="email"
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

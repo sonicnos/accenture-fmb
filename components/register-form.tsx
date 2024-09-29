@@ -25,7 +25,7 @@ import {
 } from "./ui/select";
 import { register } from "@/actions/register";
 import { useToast } from "@/hooks/use-toast";
-import { useState, useTransition } from "react";
+import { useEffect, useState, useTransition } from "react";
 
 const RegisterForm = () => {
   type RegisterFormValues = z.infer<typeof RegisterSchema>;
@@ -37,9 +37,10 @@ const RegisterForm = () => {
   const form = useForm<RegisterFormValues>({
     resolver: zodResolver(RegisterSchema),
     defaultValues: {
+      name: "",
       email: "",
       password: "",
-      role: "USER",
+      role: "",
     },
   });
 
@@ -49,28 +50,16 @@ const RegisterForm = () => {
 
     startTransition(() => {
       register(values).then((data) => {
-        setError(data.error);
-        setSuccess(data.success);
+        if (data.error) {
+          setError(data.error);
+        }
+        if (data.success) {
+          setSuccess(data.success);
+        }
       });
     });
   };
   const { toast } = useToast();
-
-  const registerToaster = () => {
-    if (success) {
-      toast({
-        variant: "success",
-        title: success,
-      });
-    }
-
-    if (error) {
-      toast({
-        variant: "destructive",
-        title: error,
-      });
-    }
-  };
 
   return (
     <CardWrapper titleLabel="Register Page">
@@ -84,7 +73,7 @@ const RegisterForm = () => {
                 <FormItem>
                   <FormLabel>Name</FormLabel>
                   <FormControl>
-                    <Input placeholder="Jhon Deo" {...field} />
+                    <Input placeholder="Jhon Deo" type="text" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -99,7 +88,11 @@ const RegisterForm = () => {
                 <FormItem>
                   <FormLabel>Email address</FormLabel>
                   <FormControl>
-                    <Input placeholder="jhon.deo@example.com" {...field} />
+                    <Input
+                      placeholder="jhon.deo@example.com"
+                      type="email"
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -134,9 +127,9 @@ const RegisterForm = () => {
                         <SelectValue placeholder="user" defaultValue="USER" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="USER">user</SelectItem>
-                        <SelectItem value="HR">hr</SelectItem>
-                        <SelectItem value="ADMIN">admin</SelectItem>
+                        <SelectItem value="employee">employee</SelectItem>
+                        <SelectItem value="hr">hr</SelectItem>
+                        <SelectItem value="admin">admin</SelectItem>
                       </SelectContent>
                     </Select>
                   </FormControl>
@@ -147,17 +140,16 @@ const RegisterForm = () => {
           <Button
             type="submit"
             onClick={() => {
-              if (success) {
-                toast({
-                  variant: "success",
-                  title: success,
-                });
-              }
-
               if (error) {
                 toast({
                   variant: "destructive",
                   title: error,
+                });
+              }
+              if (success) {
+                toast({
+                  variant: "success",
+                  title: success,
                 });
               }
             }}

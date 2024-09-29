@@ -1,5 +1,12 @@
+import LoginDetails from "@/components/loginUserDetails";
+
 const EmployeeDashboard = () => {
-  return <div>Employee Dashboard</div>;
+  return (
+    <div>
+      <p>Employee Dashboard</p>
+      <LoginDetails />
+    </div>
+  );
 };
 
 export default EmployeeDashboard;
