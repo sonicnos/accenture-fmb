@@ -1,42 +1,42 @@
-import { auth } from "@/auth";
-import { adminRoutes, employeeRoutes, hrRoutes, publicRoutes } from "./routes";
+import authConfig from "@/auth.config";
+import {
+  DEFAULT_LOGIN_REDIRECT,
+  publicRoutes,
+  tempRegisterRoutes,
+} from "./routes";
+import NextAuth from "next-auth";
 
 console.log("middlewarre");
+const { auth } = NextAuth(authConfig);
 export default auth(async (req) => {
   const { nextUrl } = req;
   const isLoggedIn = !!req.auth;
   const session = await auth();
-  console.log(isLoggedIn);
-  console.log(session?.user?.role);
+  console.log("is loggin: " + isLoggedIn);
+  console.log("is loggin: " + nextUrl);
 
-  const isAdminRoute = nextUrl.pathname.startsWith(adminRoutes);
-  const isHrRoute = nextUrl.pathname.startsWith(hrRoutes);
-  const isEmployeeRoute = nextUrl.pathname.startsWith(employeeRoutes);
+  console.log("pathname " + nextUrl.pathname);
+
   const isPublicRoute = nextUrl.pathname === publicRoutes;
-  console.log(nextUrl);
+  const isTempRegisterRoute = nextUrl.pathname === tempRegisterRoutes;
 
-  if (!isLoggedIn && !isPublicRoute) {
+  if (!isLoggedIn && !isPublicRoute && !isTempRegisterRoute) {
     return Response.redirect(new URL("/", nextUrl));
   }
 
-  if (isLoggedIn && isPublicRoute) {
-    switch (session?.user?.role) {
-      case "employee":
-        return Response.redirect(new URL("/employee", nextUrl));
+  // if (DEFAULT_LOGIN_REDIRECT) {
+  //   if (!isLoggedIn) {
+  //     return Response.redirect(new URL("/", nextUrl));
+  //   }
+  // }
 
-      case "hr":
-        return Response.redirect(new URL("/hr", nextUrl));
-
-      case "admin":
-        return Response.redirect(new URL("/admin", nextUrl));
+  if (isPublicRoute) {
+    if (isLoggedIn) {
+      return Response.redirect(new URL(DEFAULT_LOGIN_REDIRECT, nextUrl));
     }
-  }
-
-  if (isAdminRoute && session?.user?.role != "admin") {
-    return Response.redirect(new URL("/defaulttemppage", nextUrl));
   }
 });
 
 export const config = {
-  matcher: ["/((?!.+\\.[\\w]+$|_next).*)", "/", "/(api|trpc)(.*)"],
+  matcher: ["/((?!.*\\..*|_next).*)", "/", "/(api|trpc)(.*)"],
 };

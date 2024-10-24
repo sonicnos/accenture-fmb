@@ -124,7 +124,7 @@ const RegisterForm = () => {
                   <FormControl>
                     <Select value={field.value} onValueChange={field.onChange}>
                       <SelectTrigger className="w-full">
-                        <SelectValue placeholder="user" defaultValue="USER" />
+                        <SelectValue placeholder="Please select user role" />
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="employee">employee</SelectItem>

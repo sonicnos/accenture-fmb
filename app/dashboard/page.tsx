@@ -3,7 +3,7 @@ import LoginDetails from "@/components/loginUserDetails";
 const EmployeeDashboard = () => {
   return (
     <div>
-      <p>Employee Dashboard</p>
+      <p>Dashboard</p>
       <LoginDetails />
     </div>
   );

@@ -19,7 +19,13 @@ export default {
 
           const passwordMatch = await bcrypt.compare(password, user.password);
 
-          if (passwordMatch) return user;
+          if (passwordMatch) {
+            // Ensure role is a string
+            return {
+              ...user,
+              role: user.role ?? "USER", // Provide a default value if role is null
+            };
+          }
         }
 
         return null;
